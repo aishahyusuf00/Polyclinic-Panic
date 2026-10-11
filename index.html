@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Dental School Simulator: Polyclinic Panic!</title>
+  <link rel="stylesheet" href="styles.css">
+  <!-- Three.js CDN for 3D Graphics -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+</head>
+<body>
+
+  <!-- ================= MENU SCREEN ================= -->
+  <div id="menu-screen" class="overlay-screen">
+    <div class="card">
+      <h1>🦷 Dental School Simulator</h1>
+      <h2>Polyclinic Panic! (Malaysian Edition)</h2>
+      <p>Survive the 8:00 AM to 7:00 PM clinic shift while managing clinical quotas, supervisors, and your personal survival gauges!</p>
+      
+      <div class="form-group">
+        <label for="role-select">Select Playable Role:</label>
+        <select id="role-select">
+          <option value="student">Undergraduate Dental Student (BDS Y3-Y5)</option>
+          <option value="postgrad">Postgraduate Specialist Trainee</option>
+          <option value="supervisor">Lecturer / Clinical Supervisor</option>
+          <option value="dsa">Staff Nurse / Dental Surgery Assistant (DSA)</option>
+          <option value="patient">Dental Patient (Extreme Survival)</option>
+        </select>
+      </div>
+
+      <div class="form-group">
+        <label for="diff-select">Select Difficulty Level:</label>
+        <select id="diff-select">
+          <option value="1">Level 1: Santai (Novice)</option>
+          <option value="2" selected>Level 2: Polyclinic Rush (Intermediate)</option>
+          <option value="3">Level 3: Pro-IV Exam Panic (Hardcore)</option>
+        </select>
+      </div>
+
+      <button id="start-btn" class="btn-primary">🚀 START 11-MINUTE CLINIC SHIFT</button>
+    </div>
+  </div>
+
+  <!-- ================= HUD GAME INTERFACE ================= -->
+  <div id="game-container">
+    <!-- 3D Canvas Viewport -->
+    <canvas id="three-canvas"></canvas>
+
+    <!-- Top Header Bar -->
+    <div id="top-bar" class="hud-panel">
+      <div class="hud-item">🕒 Time: <span id="clock-display">08:00 AM</span></div>
+      <div class="hud-item">🏥 Posting: <span id="posting-display">Faculty Polyclinic (KOD)</span></div>
+      <div class="hud-item">👤 Role: <span id="role-display">Dental Student</span></div>
+      <div class="hud-item">⚙️ Diff: <span id="diff-display">Level 2</span></div>
+    </div>
+
+    <!-- Survival Gauges -->
+    <div id="gauges-bar" class="hud-panel">
+      <div class="gauge-group">
+        <span>⚡ Energy:</span>
+        <div class="meter-bg"><div id="energy-bar" class="meter-fill" style="width: 100%;"></div></div>
+        <span id="energy-text">100%</span>
+      </div>
+      <div class="gauge-group">
+        <span>🍔 Hunger:</span>
+        <div class="meter-bg"><div id="hunger-bar" class="meter-fill" style="width: 100%;"></div></div>
+        <span id="hunger-text">100%</span>
+      </div>
+      <div class="gauge-group">
+        <span>🚽 Bladder:</span>
+        <div class="meter-bg"><div id="bladder-bar" class="meter-fill warning" style="width: 0%;"></div></div>
+        <span id="bladder-text">0%</span>
+      </div>
+      <div class="gauge-group">
+        <span>❤️ Morale:</span>
+        <div class="meter-bg"><div id="morale-bar" class="meter-fill" style="width: 100%;"></div></div>
+        <span id="morale-text">100%</span>
+      </div>
+    </div>
+
+    <!-- Partner System & Actions -->
+    <div id="partner-panel" class="hud-panel">
+      <div>🤝 Clinical Partner: <strong id="partner-status">Farhan (Active DSA Support)</strong></div>
+      <div class="button-row">
+        <button onclick="triggerPartnerAction('suction')">F1: Call Suction</button>
+        <button onclick="triggerPartnerAction('lignocaine')">F2: Get Lignocaine</button>
+        <button onclick="triggerPartnerAction('distract')">F3: Distract Supervisor</button>
+        <button onclick="triggerPartnerAction('toilet')">🚽 Take Toilet Break</button>
+        <button onclick="triggerPartnerAction('snack')">☕ Grab Canned Coffee</button>
+      </div>
+    </div>
+
+    <!-- Active Mini-Game & Drilling HUD -->
+    <div id="minigame-panel" class="hud-panel">
+      <h3>🦷 Active Clinical Task: Class II Cavity Preparation</h3>
+      <p>Keep the drilling depth needle inside the GREEN zone! Watch out for hand tremors when Energy is low.</p>
+      <div id="drill-gauge">
+        <div id="drill-target-zone"></div>
+        <div id="drill-needle"></div>
+      </div>
+      <div class="mini-controls">
+        <button id="drill-btn" class="btn-action">⚙️ DRILL (Hold / Tap)</button>
+        <span>Pulpal Exposure Risk: <strong id="pulpal-risk" style="color: green;">LOW</strong></span>
+        <span>Predicted Bondy Score: <strong id="bondy-predict">4.5</strong></span>
+      </div>
+    </div>
+
+    <!-- Logbook & Event Ticker -->
+    <div id="bottom-bar" class="hud-panel">
+      <div id="logbook-box">
+        <strong>📋 Shift Quotas:</strong>
+        <span id="quota-1">[ ] Cavity Prep</span> |
+        <span id="quota-2">[ ] Scaling</span> |
+        <span id="quota-3">[ ] Supervisor Sign-Off</span> |
+        <span id="quota-4">[ ] Lab Model Trimming</span>
+      </div>
+      <div id="event-box">
+        🚨 <strong>Faculty Event:</strong> <span id="event-text">Shift started smoothly. All units operational.</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- ================= GAME OVER / VICTORY SCREEN ================= -->
+  <div id="end-screen" class="overlay-screen" style="display: none;">
+    <div class="card">
+      <h1 id="end-title">SHIFT COMPLETED!</h1>
+      <h2 id="end-subtitle">Evaluating Performance...</h2>
+      
+      <div class="results-grid">
+        <div class="result-item">
+          <span class="result-label">Overall Performance Score</span>
+          <span id="final-score" class="result-value">0%</span>
+        </div>
+        <div class="result-item">
+          <span class="result-label">Quotas Completed</span>
+          <span id="final-quotas" class="result-value">0 / 4</span>
+        </div>
+        <div class="bondy-breakdown">
+          <span class="result-label">Bondy Scale Rating:</span>
+          <div>
+            <span id="bondy-grade-badge" class="bondy-badge bondy-4">Bondy 4 - Supervised</span>
+            <span id="final-bondy" style="font-size: 0.9rem; margin-left: 6px;">(Score: 4.2)</span>
+          </div>
+        </div>
+      </div>
+
+      <p>Earned Title:</p>
+      <div id="earned-title" class="badge-honor">The KOD Speedrunner</div>
+
+      <button id="restart-btn" class="btn-primary" style="margin-top: 20px;">🔄 START NEXT SHIFT</button>
+    </div>
+  </div>
+
+  <!-- Scripts -->
+  <script src="sound.js"></script>
+  <script src="game.js"></script>
+</body>
+</html>

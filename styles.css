@@ -1,0 +1,293 @@
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+body, html {
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  background-color: #1a1a1a;
+  color: #ffffff;
+}
+
+/* Screens */
+.overlay-screen {
+  position: absolute;
+  top: 0; left: 0; width: 100%; height: 100%;
+  background: rgba(15, 23, 42, 0.95);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 100;
+}
+
+.card {
+  background: #1e293b;
+  padding: 30px;
+  border-radius: 12px;
+  max-width: 500px;
+  width: 90%;
+  box-shadow: 0 10px 25px rgba(0,0,0,0.5);
+  border: 1px solid #334155;
+  text-align: center;
+}
+
+.card h1 { color: #38bdf8; margin-bottom: 5px; }
+.card h2 { color: #94a3b8; font-size: 1.1rem; margin-bottom: 20px; }
+.card p { margin-bottom: 15px; font-size: 0.95rem; color: #cbd5e1; }
+
+.form-group {
+  margin-bottom: 15px;
+  text-align: left;
+}
+
+.form-group label {
+  display: block;
+  font-size: 0.85rem;
+  color: #94a3b8;
+  margin-bottom: 5px;
+}
+
+select {
+  width: 100%;
+  padding: 10px;
+  background: #0f172a;
+  color: #fff;
+  border: 1px solid #475569;
+  border-radius: 6px;
+}
+
+.btn-primary {
+  width: 100%;
+  padding: 12px;
+  background: #0284c7;
+  color: #fff;
+  border: none;
+  border-radius: 6px;
+  font-weight: bold;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: background 0.2s;
+  margin-top: 10px;
+}
+
+.btn-primary:hover { background: #0369a1; }
+
+/* Game Viewport */
+#game-container {
+  position: relative;
+  width: 100vw;
+  height: 100vh;
+}
+
+#three-canvas {
+  width: 100%;
+  height: 100%;
+  display: block;
+}
+
+/* HUD Panels */
+.hud-panel {
+  position: absolute;
+  background: rgba(15, 23, 42, 0.85);
+  backdrop-filter: blur(8px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 8px;
+  padding: 10px 15px;
+  z-index: 10;
+}
+
+#top-bar {
+  top: 15px; left: 15px; right: 15px;
+  display: flex;
+  justify-content: space-between;
+  font-weight: bold;
+  font-size: 0.9rem;
+}
+
+#gauges-bar {
+  top: 65px; left: 15px;
+  width: 280px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.gauge-group {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-size: 0.8rem;
+}
+
+.meter-bg {
+  width: 110px;
+  height: 12px;
+  background: #334155;
+  border-radius: 6px;
+  overflow: hidden;
+}
+
+.meter-fill {
+  height: 100%;
+  background: #22c55e;
+  transition: width 0.3s;
+}
+
+.meter-fill.warning { background: #eab308; }
+.meter-fill.danger { background: #ef4444; }
+
+#partner-panel {
+  top: 65px; right: 15px;
+  width: 320px;
+  font-size: 0.85rem;
+}
+
+.button-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 6px;
+  margin-top: 8px;
+}
+
+.button-row button {
+  padding: 6px;
+  background: #334155;
+  color: #fff;
+  border: 1px solid #475569;
+  border-radius: 4px;
+  font-size: 0.75rem;
+  cursor: pointer;
+}
+
+.button-row button:hover { background: #475569; }
+
+/* Drilling Mini-game */
+#minigame-panel {
+  bottom: 75px; left: 50%;
+  transform: translateX(-50%);
+  width: 450px;
+  text-align: center;
+}
+
+#minigame-panel h3 { font-size: 0.95rem; color: #38bdf8; margin-bottom: 4px; }
+#minigame-panel p { font-size: 0.75rem; color: #94a3b8; margin-bottom: 10px; }
+
+#drill-gauge {
+  position: relative;
+  width: 100%;
+  height: 24px;
+  background: #0f172a;
+  border: 2px solid #475569;
+  border-radius: 12px;
+  overflow: hidden;
+  margin-bottom: 10px;
+}
+
+#drill-target-zone {
+  position: absolute;
+  top: 0; left: 50%; width: 25%; height: 100%;
+  background: rgba(34, 197, 94, 0.4);
+  border-left: 2px solid #22c55e;
+  border-right: 2px solid #22c55e;
+}
+
+#drill-needle {
+  position: absolute;
+  top: 0; left: 10%; width: 6px; height: 100%;
+  background: #ef4444;
+  transition: left 0.05s linear;
+}
+
+.mini-controls {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 0.8rem;
+}
+
+.btn-action {
+  padding: 8px 16px;
+  background: #e11d48;
+  color: #fff;
+  border: none;
+  border-radius: 6px;
+  font-weight: bold;
+  cursor: pointer;
+}
+
+#bottom-bar {
+  bottom: 15px; left: 15px; right: 15px;
+  display: flex;
+  justify-content: space-between;
+  font-size: 0.85rem;
+}
+
+/* Evaluation Screen Styles */
+.results-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+  margin: 20px 0;
+  text-align: left;
+  background: #0f172a;
+  padding: 15px;
+  border-radius: 8px;
+  border: 1px solid #334155;
+}
+
+.result-item {
+  display: flex;
+  flex-direction: column;
+}
+
+.result-label {
+  font-size: 0.75rem;
+  color: #94a3b8;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.result-value {
+  font-size: 1.1rem;
+  font-weight: bold;
+  color: #38bdf8;
+  margin-top: 2px;
+}
+
+.bondy-breakdown {
+  grid-column: span 2;
+  border-top: 1px dashed #334155;
+  padding-top: 10px;
+  margin-top: 5px;
+}
+
+.bondy-badge {
+  display: inline-block;
+  padding: 2px 8px;
+  border-radius: 4px;
+  font-size: 0.8rem;
+  font-weight: bold;
+}
+
+.bondy-5 { background: #15803d; color: #fff; }
+.bondy-4 { background: #0369a1; color: #fff; }
+.bondy-3 { background: #a16207; color: #fff; }
+.bondy-2 { background: #c2410c; color: #fff; }
+.bondy-1 { background: #b91c1c; color: #fff; }
+
+.badge-honor {
+  display: inline-block;
+  padding: 8px 16px;
+  background: linear-gradient(135deg, #0284c7, #0369a1);
+  color: #ffffff;
+  border: 1px solid #38bdf8;
+  border-radius: 20px;
+  font-size: 1rem;
+  font-weight: bold;
+  box-shadow: 0 4px 12px rgba(56, 189, 248, 0.3);
+  margin-top: 8px;
+}
